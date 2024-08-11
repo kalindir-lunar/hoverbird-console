@@ -22,8 +22,8 @@ class Program
         if (_initGame == true)
         {
             Console.CursorVisible = false;                  //Убрал мигание строки
-            DrawGameField();                                //Отрисовал поле
-            DrawBird(_birdPad);                                    //Собственно, сам mister bird
+            DrawGameField(ConsoleColor.DarkBlue);                                //Отрисовал поле
+            DrawBird(_birdPad);                             //Собственно, сам mister bird
             _initGame = false;                              //Сделал initGame, чтоб один раз поле отрисовывать
             _gameRun = true;                                //Запустил основную логику, отрисовку птицы, облаков, движение и тд
         }
@@ -31,7 +31,6 @@ class Program
         while (_gameRun == true)
         {     
             DrawBird(_birdPad);   
-            ChangeBirdDirection();                         //Тут пока игра запущена, то идет постоянное считывание нажатой кнопки
             DrawScore();
             InputController(); 
         }
@@ -51,15 +50,14 @@ class Program
             Thread.Sleep(100);
         }
 
-        //ChangeBirdDirection();                            //Меняет направление движения птицы после очередного нажатого SpaceBar
+        ChangeBirdDirection();                              //Меняет направление движения птицы после очередного нажатого SpaceBar
         QuitGame();                                         //Остановка программы при нажатии Q
     }
 
-    private static void DrawGameField()
+    private static void DrawGameField(ConsoleColor consoleColor)
     {
         Console.Clear();
-        Console.BackgroundColor = ConsoleColor.DarkBlue;
-
+        Console.BackgroundColor = consoleColor;
         for (int i = 0; i < 40; i++)
         {
             if (i == 0 || i == 39)
@@ -71,7 +69,7 @@ class Program
                 Console.Write(_starBrick);
                 Console.WriteLine();
             }
-            else if (i == 5)
+            else if (i == 5 && _initGame == true)
             {
                 Console.WriteLine(_starBrick + _gameScore.ToString().PadLeft(30) + _starBrick.PadLeft(30));
             }
@@ -106,11 +104,13 @@ class Program
         {
             if(i == 1)
             {
+                RedrawLastBirdFrame(birdXCoordinate-2, yPositions[i]);
                 ClearCharInConsole(birdXCoordinate+28, yPositions[i]);
                 Console.SetCursorPosition(birdXCoordinate+28, yPositions[i]);
             }
             else
             {
+                RedrawLastBirdFrame(birdXCoordinate, yPositions[i]);
                 ClearCharInConsole(birdXCoordinate+30, yPositions[i]);
                 Console.SetCursorPosition(birdXCoordinate+30, yPositions[i]);
             }
@@ -124,12 +124,24 @@ class Program
         Console.ResetColor();
     }
 
+    private static void RedrawLastBirdFrame(int birdXCoordinate, int yPosition)
+    {
+        if(_birdDirection == false)
+        {
+            ClearCharInConsole(birdXCoordinate+29, yPosition);
+        }    
+        if(_birdDirection == true)
+        {
+            ClearCharInConsole(birdXCoordinate+31, yPosition);
+        }
+    }
+
     async static Task ChangeBirdDirection()
     {
         while (_spacebarPressed == true && _birdDirection == true)
         {
-            _birdPad++;
             _birdDirection = !_birdDirection;
+            _birdPad++;
             ClearLineInConsole(0,41);
             Console.SetCursorPosition(0, 41);
             Console.WriteLine("Direction: " + _birdDirection);
@@ -154,11 +166,12 @@ class Program
         {
             _gameRun = false;
             //ClearLineInConsole(0,41);
-            Console.SetCursorPosition(0, 41);
+            DrawGameField(ConsoleColor.Red);
+            Console.SetCursorPosition(16, 20);
             Console.BackgroundColor = ConsoleColor.Red;
-            Console.WriteLine("Quit from the game. Good luck!");
+            Console.WriteLine("Quit from the game,good luck!");
             Console.ResetColor();
-            Thread.Sleep(1000);
+            Thread.Sleep(3000);
             Console.Clear();
         }
     }
