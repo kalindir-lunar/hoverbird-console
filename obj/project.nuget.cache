@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "F+1/A+vnNI9jtdpbLuyveQr7VUazK7uC5nPkR+xfKS1NFAnLLHXY0Jbtd9QqeCOvLNdkawW/JxnQkLK98v/YeQ==",
+  "success": true,
+  "projectFilePath": "/home/kalindir/Learning/HoverbirdConsole/HoverbirdConsole.csproj",
+  "expectedPackageFiles": [
+    "/home/kalindir/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.7/microsoft.aspnetcore.app.ref.8.0.7.nupkg.sha512"
+  ],
+  "logs": []
+}
