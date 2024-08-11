@@ -14,7 +14,7 @@ class Program
     private static string _starBrick = "*";
     private static bool _birdDirection;
     private static float _birdPad = 0;
-    private static float _previousBirdPad = 0;
+    private static int _previousBirdPad = 0;
     private static ConsoleKey _lastInputKey;
     private static bool _spacebarPressed = false;
     private static int _gameScore = 0;
@@ -148,16 +148,30 @@ class Program
         {
             while (_spacebarPressed == true && _birdDirection == true)
             {
-                _previousBirdPad = _birdPad;
-                _birdPad = 3;
-                DrawBird((int)_birdPad, (int)_previousBirdPad);
+                _previousBirdPad = (int)_birdPad;
+                _birdPad += 0.001f;
+                //if((int)_birdPad > _previousBirdPad)
+                //{
+                    DrawBird((int)_birdPad, (int)_previousBirdPad);
+                    CollideWithBrick();
+                //}
+
+                ClearLineInConsole(0,52);
+                Console.WriteLine("DEBUG: _birdPad = " + _birdPad);
             }
 
             while (_spacebarPressed == true && _birdDirection == false)
             {
-                _previousBirdPad = _birdPad;
-                _birdPad = -3;
-                DrawBird((int)_birdPad, (int)_previousBirdPad);
+                _previousBirdPad = (int)_birdPad;
+                _birdPad -= 0.001f;
+                //if((int)_birdPad < _previousBirdPad)
+                //{
+                    DrawBird((int)_birdPad, (int)_previousBirdPad);
+                    CollideWithBrick();
+                //}
+
+                ClearLineInConsole(0,52);
+                Console.WriteLine("DEBUG: _birdPad = " + _birdPad);
 
             }
         }
@@ -175,10 +189,45 @@ class Program
             Console.BackgroundColor = ConsoleColor.Red;
             Console.WriteLine("Quit from the game,good luck!");
             Console.ResetColor();
-            Thread.Sleep(3000);
+            Thread.Sleep(1500);
             Console.Clear();
             Console.CursorVisible = true;  
         }
+    }
+
+    private static void CollideWithBrick()
+    {
+        if(_birdPad < -28.5f)
+        {
+            _birdPad = 26.5f;
+            ClearLineInConsole(0,31);
+            ClearLineInConsole(0,32);
+            ClearLineInConsole(0,33);
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(0, 31);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.SetCursorPosition(0, 32);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.SetCursorPosition(0, 33);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.ResetColor();
+        }
+        else if(_birdPad > 28.5f) 
+        {
+            _birdPad = -26.5f;
+            ClearLineInConsole(0,31);
+            ClearLineInConsole(0,32);
+            ClearLineInConsole(0,33);
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(0, 31);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.SetCursorPosition(0, 32);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.SetCursorPosition(0, 33);
+            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            Console.ResetColor(); 
+        }
+
     }
 
     private static void ClearLineInConsole(int X, int Y)
