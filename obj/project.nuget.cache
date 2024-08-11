@@ -1,11 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "8jEIMpiU4dl6sjGZY4sSl5BG/jsTa9f48I4/Krhg40X0dlvBtBVti8ne0lcjHnsjQX6nNkwqhFAeXXobM61iKw==",
+  "dgSpecHash": "wgdUtl+jqq21m0a9X0e+5EcPs6mRGY/2apET1S3WnU4QCzjfoSRPmVFMOd4bsQHrpnnhL12cffHnFFKstFmsGg==",
   "success": true,
   "projectFilePath": "/home/kalindir/Learning/HoverbirdConsole/HoverbirdConsole.csproj",
   "expectedPackageFiles": [
+    "/home/kalindir/.nuget/packages/microsoft.netcore.app.runtime.win-x64/8.0.7/microsoft.netcore.app.runtime.win-x64.8.0.7.nupkg.sha512",
     "/home/kalindir/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.7/microsoft.aspnetcore.app.ref.8.0.7.nupkg.sha512",
-    "/home/kalindir/.nuget/packages/microsoft.netcore.app.host.linux-x64/8.0.7/microsoft.netcore.app.host.linux-x64.8.0.7.nupkg.sha512"
+    "/home/kalindir/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/8.0.7/microsoft.aspnetcore.app.runtime.win-x64.8.0.7.nupkg.sha512",
+    "/home/kalindir/.nuget/packages/microsoft.netcore.app.host.win-x64/8.0.7/microsoft.netcore.app.host.win-x64.8.0.7.nupkg.sha512"
   ],
   "logs": []
 }

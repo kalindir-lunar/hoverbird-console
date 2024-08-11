@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HoverbirdConsole")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+54df4e485cb605105dcfe6653e3bb745e9cf8e07")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+764748aa9a9de4fe39879e277391bf0b37d25eaf")]
 [assembly: System.Reflection.AssemblyProductAttribute("HoverbirdConsole")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HoverbirdConsole")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

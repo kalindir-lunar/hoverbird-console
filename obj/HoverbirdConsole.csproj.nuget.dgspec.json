@@ -54,7 +54,15 @@
               "version": "[8.0.7, 8.0.7]"
             },
             {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+              "version": "[8.0.7, 8.0.7]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[8.0.7, 8.0.7]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Runtime.win-x64",
               "version": "[8.0.7, 8.0.7]"
             }
           ],
@@ -67,7 +75,7 @@
         }
       },
       "runtimes": {
-        "linux-x64": {
+        "win-x64": {
           "#import": []
         }
       }
