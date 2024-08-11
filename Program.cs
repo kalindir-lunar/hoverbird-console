@@ -9,51 +9,55 @@ namespace HoverbirdConsole;
 
 class Program
 {
-    private static bool _initGame = true;                   //сделал для начала отрисовки
-    private static bool _gameRun = false;                   //выполняет, если игра отрисовалась и запущена
-    private static string _starBrick = "*";
-    private static bool _birdDirection;
-    private static float _birdPad = 0;
-    private static int _previousBirdPad = 0;
-    private static ConsoleKey _lastInputKey;
-    private static bool _spacebarPressed = false;
-    private static int _gameScore = 0;
+    private const int framesPerSecond = 30;
+    private const float movementPerFrame = 1f;
+    private const int delayBetweenFrames = 1000 / framesPerSecond;
+    private static bool initGame = true;
+    private static bool gameRun = false;
+    private static string starBrick = "*";
+    private static bool birdDirection;
+    private static float birdPad = 0;
+    private static int previousBirdPad = 0;
+    private static ConsoleKey lastInputKey;
+    private static bool spacebarPressed = false;
+    private static int gameScore = 0;
+    private static string EndMessage = "Quit from the game, good luck!";
+
     static async Task Main(string[] args)
     {
-        if (_initGame == true)
+        if (initGame)
         {
-            Console.CursorVisible = false;                  //Убрал мигание строки
-            DrawGameField(ConsoleColor.DarkBlue);           //Отрисовал поле
-            DrawBird((int)_birdPad, (int)_previousBirdPad); //Собственно, сам mister bird
-            _initGame = false;                              //Сделал initGame, чтоб один раз поле отрисовывать
-            _gameRun = true;                                //Запустил основную логику, отрисовку птицы, облаков, движение и тд
+            Console.CursorVisible = false;
+            DrawGameField(ConsoleColor.Black);
+            DrawBird((int)birdPad, (int)previousBirdPad);
+            initGame = false;
+            gameRun = true;
         }
 
         Task.Run(() => ChangeBirdDirectionAsync());
         Task.Run(() => InputController());
+        Task.Run(() => DrawAndMoveCloud());
 
-        while (_gameRun)
+        while (gameRun)
         {
-            //DrawScore();
+            DrawScore();
             QuitGame();
+            await Task.Delay(delayBetweenFrames);
         }
     }
 
     private static void InputController()
     {
-        while (_gameRun)
+        while (gameRun)
         {
             if (Console.KeyAvailable)
             {
-                _lastInputKey = Console.ReadKey(true).Key;
+                lastInputKey = Console.ReadKey(true).Key;
 
-                if (_lastInputKey == ConsoleKey.Spacebar)
+                if (lastInputKey == ConsoleKey.Spacebar)
                 {
-                    _spacebarPressed = true;
-                    _birdDirection = !_birdDirection;
-                    //_previousBirdPad = (int)_birdPad;
-                    //ClearLineInConsole(0,54);
-                    //Console.WriteLine("DEBUG: _previousBirdPad = " + _previousBirdPad);
+                    spacebarPressed = true;
+                    birdDirection = !birdDirection;
                 }
                 Thread.Sleep(100);
             }
@@ -70,40 +74,38 @@ class Program
             {
                 for (int j = 0; j < 30; j++)
                 {
-                    Console.Write(_starBrick.PadRight(2));
+                    Console.Write(starBrick.PadRight(2));
                 }
-                Console.Write(_starBrick);
+                Console.Write(starBrick);
                 Console.WriteLine();
             }
-            else if (i == 5 && _initGame == true)
+            else if (i == 5 && initGame == true)
             {
-                Console.WriteLine(_starBrick + _gameScore.ToString().PadLeft(30) + _starBrick.PadLeft(30));
+                Console.WriteLine(starBrick + gameScore.ToString().PadLeft(30) + starBrick.PadLeft(30));
             }
             else
-                Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
+            {
+                Console.WriteLine(starBrick + starBrick.PadLeft(60));
+            }
         }
-        Console.ResetColor();
     }
 
     private static void DrawScore()
     {
         Thread.Sleep(10);
-        _gameScore++;
-        Console.BackgroundColor = ConsoleColor.DarkBlue;
+        gameScore++;
         Console.SetCursorPosition(30, 5);
-        Console.Write(_gameScore.ToString());
-        Console.ResetColor();
+        Console.Write(gameScore.ToString());
     }
 
     private static void DrawBird(int birdXCoordinate, int previousBirdXCoordinate)
     {
-        Console.BackgroundColor = ConsoleColor.DarkBlue;
         int[] yPositions = { 31, 32, 33 };
 
-        string[] lines = {  //Mister Bird
-                "A",        //lines.Length 0
-              "/^O^\\",     //lines.Length 1
-                "X"         //lines.Length 2
+        string[] lines = {
+            "A",
+            "/^O^\\",
+            "X"
         };
 
         for (int i = 0; i < lines.Length; i++)
@@ -119,56 +121,45 @@ class Program
             }
             else
             {
-                RedrawLastBirdFrame(previousBirdXCoordinate + 30, yPositions[i]); //Это удаляет птицу с предыдущего места
-                ClearCharInConsole(birdXCoordinate + 30, yPositions[i]);          //Это очищает путь для отрисовки птицы в следующем месте
-                Console.SetCursorPosition(birdXCoordinate + 30, yPositions[i]);   //Наводимся на следующее место
+                RedrawLastBirdFrame(previousBirdXCoordinate + 30, yPositions[i]);
+                ClearCharInConsole(birdXCoordinate + 30, yPositions[i]);
+                Console.SetCursorPosition(birdXCoordinate + 30, yPositions[i]);
             }
 
             foreach (char c in lines[i])
             {
-                Console.Write(c);                                               //Рисуем пока в строке
+                Console.Write(c);
             }
         }
 
-        Console.ResetColor();
-        _previousBirdPad = (int)_birdPad;
+        previousBirdPad = (int)birdPad;
     }
 
     private static void RedrawLastBirdFrame(int birdXCoordinate, int yPosition)
     {
-        if (_birdDirection == false)
-        {
-            ClearCharInConsole(birdXCoordinate, yPosition);
-        }
-        if (_birdDirection == true)
-        {
-            ClearCharInConsole(birdXCoordinate, yPosition);
-        }
+        ClearCharInConsole(birdXCoordinate, yPosition);
     }
 
     private static async Task ChangeBirdDirectionAsync()
     {
-        const int framesPerSecond = 30;
-        const float movementPerFrame = 1f;
-        const int delayBetweenFrames = 1000 / framesPerSecond;
-
-        while (_gameRun)
+        while (gameRun)
         {
-            if (_spacebarPressed)
+            if (spacebarPressed)
             {
-                CollideWithBrick(); // Проверка на столкновение
-                if (_birdDirection)
+                CollideWithBrick();
+
+                if (birdDirection)
                 {
-                    _birdPad += movementPerFrame;
+                    birdPad += movementPerFrame;
                 }
                 else
                 {
-                    _birdPad -= movementPerFrame;
+                    birdPad -= movementPerFrame;
                 }
 
-                if ((int)_birdPad != (int)_previousBirdPad)
+                if ((int)birdPad != (int)previousBirdPad)
                 {
-                    DrawBird((int)_birdPad, (int)_previousBirdPad);
+                    DrawBird((int)birdPad, (int)previousBirdPad);
                 }
             }
 
@@ -176,20 +167,19 @@ class Program
         }
     }
 
-
-
     private static void QuitGame()
     {
-        if (_lastInputKey == ConsoleKey.Q)
+        if (lastInputKey == ConsoleKey.Q)
         {
-            _spacebarPressed = false;
-            _gameRun = false;
+            spacebarPressed = false;
+            gameRun = false;
             DrawGameField(ConsoleColor.Red);
             Console.SetCursorPosition(16, 20);
             Console.BackgroundColor = ConsoleColor.Red;
-            Console.WriteLine("Quit from the game,good luck!");
+            //Console.WriteLine("Quit from the game, good luck!");
+            Console.WriteLine(EndMessage);
             Console.ResetColor();
-            Thread.Sleep(1500);
+            Thread.Sleep(3000);
             Console.Clear();
             Console.CursorVisible = true;
         }
@@ -197,48 +187,22 @@ class Program
 
     private static void CollideWithBrick()
     {
-        if (_birdPad <= -28f)
+        if (birdPad <= -28f)
         {
-            _birdPad = 26f;
+            birdPad = 26f;
             ClearLineInConsole(0, 31);
             ClearLineInConsole(0, 32);
             ClearLineInConsole(0, 33);
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.SetCursorPosition(0, 31);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.SetCursorPosition(0, 32);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.SetCursorPosition(0, 33);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.ResetColor();
-            DrawBird((int)_birdPad, (int)_previousBirdPad);
-
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.SetCursorPosition(0, 32);
-            Console.Write(_starBrick);
-            Console.ResetColor();
+            DrawBird((int)birdPad, (int)previousBirdPad);
         }
-        else if (_birdPad >= 28f)
+        else if (birdPad >= 28f)
         {
-            _birdPad = -26f;
+            birdPad = -26f;
             ClearLineInConsole(0, 31);
             ClearLineInConsole(0, 32);
             ClearLineInConsole(0, 33);
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.SetCursorPosition(0, 31);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.SetCursorPosition(0, 32);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.SetCursorPosition(0, 33);
-            Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            DrawBird((int)_birdPad, (int)_previousBirdPad);
-
-            Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.SetCursorPosition(60, 32);
-            Console.Write(_starBrick);
-            Console.ResetColor();
+            DrawBird((int)birdPad, (int)previousBirdPad);
         }
-
     }
 
     private static void ClearLineInConsole(int X, int Y)
@@ -251,5 +215,85 @@ class Program
     {
         Console.SetCursorPosition(X, Y);
         Console.Write(' ');
+    }
+
+    private static async Task DrawAndMoveCloud()
+    {
+        Random random = new Random();
+        const int cloudWidth = 5;
+        const int cloudHeight = 2;
+        const int spawnInterval = 10; // Интервал в линиях между спавнами облаков
+
+        List<(int x, int y)> clouds = new List<(int x, int y)>();
+
+        while (gameRun)
+        {
+            if (clouds.Count == 0 || clouds.Last().y >= spawnInterval)
+            {
+                int xPosition = random.Next(3, 58 - cloudWidth);
+                clouds.Add((xPosition, 3)); // Спавн облака на 3-й линии
+            }
+
+            for (int i = 0; i < clouds.Count; i++)
+            {
+                var cloud = clouds[i];
+                int newY = cloud.y + 1;
+
+                ClearCloud(cloud.x, cloud.y);
+
+                if (CheckCollisionWithBird(cloud.x, newY))
+                {
+                    EndMessage = "   You loose! Awoid clouds.";
+                    lastInputKey = ConsoleKey.Q;
+                }
+
+                if (newY + cloudHeight >= 40)
+                {
+                    clouds.RemoveAt(i);
+                    i--; // Корректируем индекс, так как облако было удалено
+                }
+                else
+                {
+                    DrawCloud(cloud.x, newY);
+                    clouds[i] = (cloud.x, newY);
+                }
+            }
+
+            await Task.Delay(delayBetweenFrames * 5); // Замедление облаков
+        }
+    }
+
+    private static void DrawCloud(int x, int y)
+    {
+        string[] lines =
+        {
+        "=====",
+        "=====",
+    };
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            Console.SetCursorPosition(x, y + i);
+            Console.Write(lines[i]);
+        }
+    }
+
+
+    private static void ClearCloud(int x, int y)
+    {
+        for (int i = 0; i < 2; i++) // 2 строки в облаке
+        {
+            Console.SetCursorPosition(x, y + i);
+            Console.Write(new string(' ', 5)); // Очистка ширины облака
+        }
+    }
+
+
+    private static bool CheckCollisionWithBird(int cloudX, int cloudY)
+    {
+        int birdX = (int)birdPad + 30; // Позиция X птицы (в середине экрана)
+        int birdY = 31; // Позиция Y птицы (линии 31, 32, 33)
+
+        return cloudX < birdX + 5 && cloudX + 5 > birdX && cloudY < birdY + 3 && cloudY + 2 > birdY;
     }
 }
