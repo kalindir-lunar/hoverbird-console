@@ -13,45 +13,48 @@ class Program
     private static bool _gameRun = false;                   //выполняет, если игра отрисовалась и запущена
     private static string _starBrick = "*";
     private static bool _birdDirection;
-    private static int _birdPad = 0;
+    private static float _birdPad = 0;
+    private static float _previousBirdPad = 0;
     private static ConsoleKey _lastInputKey;
     private static bool _spacebarPressed = false;
     private static int _gameScore = 0;
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         if (_initGame == true)
         {
             Console.CursorVisible = false;                  //Убрал мигание строки
-            DrawGameField(ConsoleColor.DarkBlue);                                //Отрисовал поле
-            DrawBird(_birdPad);                             //Собственно, сам mister bird
+            DrawGameField(ConsoleColor.DarkBlue);           //Отрисовал поле
+            DrawBird((int)_birdPad, (int)_previousBirdPad); //Собственно, сам mister bird
             _initGame = false;                              //Сделал initGame, чтоб один раз поле отрисовывать
             _gameRun = true;                                //Запустил основную логику, отрисовку птицы, облаков, движение и тд
         }
 
-        while (_gameRun == true)
-        {     
-            DrawBird(_birdPad);   
-            DrawScore();
-            InputController(); 
+        Task.Run(() => ChangeBirdDirectionAsync());
+        Task.Run(() => InputController());
+
+        while (_gameRun)
+        {   
+            //DrawScore();
+            QuitGame();
         }
     }
 
     private static void InputController()
     {
-        if (Console.KeyAvailable)
+         while (_gameRun)
         {
-            _lastInputKey = Console.ReadKey(true).Key;
-
-            if(_lastInputKey == ConsoleKey.Spacebar)
+            if (Console.KeyAvailable)
             {
-                _spacebarPressed = true;   
+                _lastInputKey = Console.ReadKey(true).Key;
+
+                if(_lastInputKey == ConsoleKey.Spacebar)
+                {
+                    _spacebarPressed = true;
+                    _birdDirection = !_birdDirection;
+                }
+                Thread.Sleep(100);
             }
-
-            Thread.Sleep(100);
         }
-
-        ChangeBirdDirection();                              //Меняет направление движения птицы после очередного нажатого SpaceBar
-        QuitGame();                                         //Остановка программы при нажатии Q
     }
 
     private static void DrawGameField(ConsoleColor consoleColor)
@@ -89,7 +92,7 @@ class Program
         Console.ResetColor();
     }
 
-    private static void DrawBird(int birdXCoordinate)
+    private static void DrawBird(int birdXCoordinate, int previousBirdXCoordinate)
     {
         Console.BackgroundColor = ConsoleColor.DarkBlue;
         int[] yPositions = {31, 32, 33};
@@ -104,13 +107,16 @@ class Program
         {
             if(i == 1)
             {
-                RedrawLastBirdFrame(birdXCoordinate-2, yPositions[i]);
+                for (int charInLineWithWings = 0; charInLineWithWings < lines[1].Length; charInLineWithWings++)
+                {
+                    RedrawLastBirdFrame(previousBirdXCoordinate+28+charInLineWithWings, yPositions[i]);
+                }
                 ClearCharInConsole(birdXCoordinate+28, yPositions[i]);
                 Console.SetCursorPosition(birdXCoordinate+28, yPositions[i]);
             }
             else
             {
-                RedrawLastBirdFrame(birdXCoordinate, yPositions[i]);
+                RedrawLastBirdFrame(previousBirdXCoordinate+30, yPositions[i]);
                 ClearCharInConsole(birdXCoordinate+30, yPositions[i]);
                 Console.SetCursorPosition(birdXCoordinate+30, yPositions[i]);
             }
@@ -128,44 +134,42 @@ class Program
     {
         if(_birdDirection == false)
         {
-            ClearCharInConsole(birdXCoordinate+29, yPosition);
+            ClearCharInConsole(birdXCoordinate, yPosition);
         }    
         if(_birdDirection == true)
         {
-            ClearCharInConsole(birdXCoordinate+31, yPosition);
+            ClearCharInConsole(birdXCoordinate, yPosition);
         }
     }
 
-    async static Task ChangeBirdDirection()
+    private static void ChangeBirdDirectionAsync()
     {
-        while (_spacebarPressed == true && _birdDirection == true)
+        while(_gameRun)
         {
-            _birdDirection = !_birdDirection;
-            _birdPad++;
-            ClearLineInConsole(0,41);
-            Console.SetCursorPosition(0, 41);
-            Console.WriteLine("Direction: " + _birdDirection);
-            _spacebarPressed = false;
-        }
+            while (_spacebarPressed == true && _birdDirection == true)
+            {
+                _previousBirdPad = _birdPad;
+                _birdPad = 3;
+                DrawBird((int)_birdPad, (int)_previousBirdPad);
+            }
 
-        while (_spacebarPressed == true && _birdDirection == false)
-        {
-            _birdPad--;
-            _birdDirection = !_birdDirection;
-            ClearLineInConsole(0,41);
-            Console.SetCursorPosition(0, 41);
-            Console.WriteLine("Direction: " + _birdDirection);
-            _spacebarPressed = false;
+            while (_spacebarPressed == true && _birdDirection == false)
+            {
+                _previousBirdPad = _birdPad;
+                _birdPad = -3;
+                DrawBird((int)_birdPad, (int)_previousBirdPad);
+
+            }
         }
-        await Task.Delay(125); 
+        Task.Delay(125);
     }
 
     private static void QuitGame()
     {
         if (_lastInputKey == ConsoleKey.Q)
         {
+            _spacebarPressed = false;
             _gameRun = false;
-            //ClearLineInConsole(0,41);
             DrawGameField(ConsoleColor.Red);
             Console.SetCursorPosition(16, 20);
             Console.BackgroundColor = ConsoleColor.Red;
@@ -173,6 +177,7 @@ class Program
             Console.ResetColor();
             Thread.Sleep(3000);
             Console.Clear();
+            Console.CursorVisible = true;  
         }
     }
 
