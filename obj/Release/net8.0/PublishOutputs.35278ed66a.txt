@@ -1,0 +1,5 @@
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.dll
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.deps.json
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.runtimeconfig.json
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.pdb

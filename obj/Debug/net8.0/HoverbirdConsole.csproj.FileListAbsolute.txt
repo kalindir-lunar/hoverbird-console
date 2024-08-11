@@ -12,3 +12,4 @@
 /home/kalindir/Learning/HoverbirdConsole/obj/Debug/net8.0/HoverbirdConsole.pdb
 /home/kalindir/Learning/HoverbirdConsole/obj/Debug/net8.0/HoverbirdConsole.genruntimeconfig.cache
 /home/kalindir/Learning/HoverbirdConsole/obj/Debug/net8.0/ref/HoverbirdConsole.dll
+/home/kalindir/Learning/HoverbirdConsole/obj/Debug/net8.0/HoverbirdConsole.sourcelink.json

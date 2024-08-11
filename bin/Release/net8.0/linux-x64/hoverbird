@@ -1,0 +1,5 @@
+#!/bin/bash
+# Определение каталога, где находится скрипт
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# Запуск исполняемого файла
+"$DIR/HoverbirdConsole" "$@"

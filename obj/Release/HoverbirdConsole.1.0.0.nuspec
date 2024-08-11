@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>HoverbirdConsole</id>
+    <version>1.0.0</version>
+    <authors>HoverbirdConsole</authors>
+    <description>Package Description</description>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository type="git" commit="54df4e485cb605105dcfe6653e3bb745e9cf8e07" />
+  </metadata>
+  <files>
+    <file src="/home/kalindir/Learning/HoverbirdConsole/obj/DotnetToolSettings.xml" target="tools/net8.0/any/DotnetToolSettings.xml" />
+    <file src="/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.dll" target="tools/net8.0/any/HoverbirdConsole.dll" />
+    <file src="/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.deps.json" target="tools/net8.0/any/HoverbirdConsole.deps.json" />
+    <file src="/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.runtimeconfig.json" target="tools/net8.0/any/HoverbirdConsole.runtimeconfig.json" />
+    <file src="/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/publish/HoverbirdConsole.pdb" target="tools/net8.0/any/HoverbirdConsole.pdb" />
+  </files>
+</package>

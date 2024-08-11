@@ -1,0 +1,15 @@
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/HoverbirdConsole
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/HoverbirdConsole.deps.json
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/HoverbirdConsole.runtimeconfig.json
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/HoverbirdConsole.dll
+/home/kalindir/Learning/HoverbirdConsole/bin/Release/net8.0/HoverbirdConsole.pdb
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.GeneratedMSBuildEditorConfig.editorconfig
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.AssemblyInfoInputs.cache
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.AssemblyInfo.cs
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.csproj.CoreCompileInputs.cache
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.sourcelink.json
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.dll
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/refint/HoverbirdConsole.dll
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.pdb
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/HoverbirdConsole.genruntimeconfig.cache
+/home/kalindir/Learning/HoverbirdConsole/obj/Release/net8.0/ref/HoverbirdConsole.dll
