@@ -1,4 +1,4 @@
-﻿using System; 
+﻿using System;
 using System.Linq;
 using System.Drawing;
 using System.IO;
@@ -33,7 +33,7 @@ class Program
         Task.Run(() => InputController());
 
         while (_gameRun)
-        {   
+        {
             //DrawScore();
             QuitGame();
         }
@@ -41,16 +41,19 @@ class Program
 
     private static void InputController()
     {
-         while (_gameRun)
+        while (_gameRun)
         {
             if (Console.KeyAvailable)
             {
                 _lastInputKey = Console.ReadKey(true).Key;
 
-                if(_lastInputKey == ConsoleKey.Spacebar)
+                if (_lastInputKey == ConsoleKey.Spacebar)
                 {
                     _spacebarPressed = true;
                     _birdDirection = !_birdDirection;
+                    //_previousBirdPad = (int)_birdPad;
+                    //ClearLineInConsole(0,54);
+                    //Console.WriteLine("DEBUG: _previousBirdPad = " + _previousBirdPad);
                 }
                 Thread.Sleep(100);
             }
@@ -95,7 +98,7 @@ class Program
     private static void DrawBird(int birdXCoordinate, int previousBirdXCoordinate)
     {
         Console.BackgroundColor = ConsoleColor.DarkBlue;
-        int[] yPositions = {31, 32, 33};
+        int[] yPositions = { 31, 32, 33 };
 
         string[] lines = {  //Mister Bird
                 "A",        //lines.Length 0
@@ -105,78 +108,75 @@ class Program
 
         for (int i = 0; i < lines.Length; i++)
         {
-            if(i == 1)
+            if (i == 1)
             {
                 for (int charInLineWithWings = 0; charInLineWithWings < lines[1].Length; charInLineWithWings++)
                 {
-                    RedrawLastBirdFrame(previousBirdXCoordinate+28+charInLineWithWings, yPositions[i]);
+                    RedrawLastBirdFrame(previousBirdXCoordinate + 28 + charInLineWithWings, yPositions[i]);
                 }
-                ClearCharInConsole(birdXCoordinate+28, yPositions[i]);
-                Console.SetCursorPosition(birdXCoordinate+28, yPositions[i]);
+                ClearCharInConsole(birdXCoordinate + 28, yPositions[i]);
+                Console.SetCursorPosition(birdXCoordinate + 28, yPositions[i]);
             }
             else
             {
-                RedrawLastBirdFrame(previousBirdXCoordinate+30, yPositions[i]);
-                ClearCharInConsole(birdXCoordinate+30, yPositions[i]);
-                Console.SetCursorPosition(birdXCoordinate+30, yPositions[i]);
+                RedrawLastBirdFrame(previousBirdXCoordinate + 30, yPositions[i]); //Это удаляет птицу с предыдущего места
+                ClearCharInConsole(birdXCoordinate + 30, yPositions[i]);          //Это очищает путь для отрисовки птицы в следующем месте
+                Console.SetCursorPosition(birdXCoordinate + 30, yPositions[i]);   //Наводимся на следующее место
             }
-    
+
             foreach (char c in lines[i])
             {
-                Console.Write(c);
+                Console.Write(c);                                               //Рисуем пока в строке
             }
         }
 
         Console.ResetColor();
+        _previousBirdPad = (int)_birdPad;
     }
 
     private static void RedrawLastBirdFrame(int birdXCoordinate, int yPosition)
     {
-        if(_birdDirection == false)
+        if (_birdDirection == false)
         {
             ClearCharInConsole(birdXCoordinate, yPosition);
-        }    
-        if(_birdDirection == true)
+        }
+        if (_birdDirection == true)
         {
             ClearCharInConsole(birdXCoordinate, yPosition);
         }
     }
 
-    private static void ChangeBirdDirectionAsync()
+    private static async Task ChangeBirdDirectionAsync()
     {
-        while(_gameRun)
+        const int framesPerSecond = 30;
+        const float movementPerFrame = 1f;
+        const int delayBetweenFrames = 1000 / framesPerSecond;
+
+        while (_gameRun)
         {
-            while (_spacebarPressed == true && _birdDirection == true)
+            if (_spacebarPressed)
             {
-                _previousBirdPad = (int)_birdPad;
-                _birdPad += 0.001f;
-                //if((int)_birdPad > _previousBirdPad)
-                //{
-                    DrawBird((int)_birdPad, (int)_previousBirdPad);
-                    CollideWithBrick();
-                //}
+                CollideWithBrick(); // Проверка на столкновение
+                if (_birdDirection)
+                {
+                    _birdPad += movementPerFrame;
+                }
+                else
+                {
+                    _birdPad -= movementPerFrame;
+                }
 
-                ClearLineInConsole(0,52);
-                Console.WriteLine("DEBUG: _birdPad = " + _birdPad);
+                if ((int)_birdPad != (int)_previousBirdPad)
+                {
+                    DrawBird((int)_birdPad, (int)_previousBirdPad);
+                }
             }
 
-            while (_spacebarPressed == true && _birdDirection == false)
-            {
-                _previousBirdPad = (int)_birdPad;
-                _birdPad -= 0.001f;
-                //if((int)_birdPad < _previousBirdPad)
-                //{
-                    DrawBird((int)_birdPad, (int)_previousBirdPad);
-                    CollideWithBrick();
-                //}
-
-                ClearLineInConsole(0,52);
-                Console.WriteLine("DEBUG: _birdPad = " + _birdPad);
-
-            }
+            await Task.Delay(delayBetweenFrames);
         }
-        Task.Delay(125);
     }
+
+
 
     private static void QuitGame()
     {
@@ -191,18 +191,18 @@ class Program
             Console.ResetColor();
             Thread.Sleep(1500);
             Console.Clear();
-            Console.CursorVisible = true;  
+            Console.CursorVisible = true;
         }
     }
 
     private static void CollideWithBrick()
     {
-        if(_birdPad < -28.5f)
+        if (_birdPad <= -28f)
         {
-            _birdPad = 26.5f;
-            ClearLineInConsole(0,31);
-            ClearLineInConsole(0,32);
-            ClearLineInConsole(0,33);
+            _birdPad = 26f;
+            ClearLineInConsole(0, 31);
+            ClearLineInConsole(0, 32);
+            ClearLineInConsole(0, 33);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.SetCursorPosition(0, 31);
             Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
@@ -211,13 +211,19 @@ class Program
             Console.SetCursorPosition(0, 33);
             Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
             Console.ResetColor();
+            DrawBird((int)_birdPad, (int)_previousBirdPad);
+
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(0, 32);
+            Console.Write(_starBrick);
+            Console.ResetColor();
         }
-        else if(_birdPad > 28.5f) 
+        else if (_birdPad >= 28f)
         {
-            _birdPad = -26.5f;
-            ClearLineInConsole(0,31);
-            ClearLineInConsole(0,32);
-            ClearLineInConsole(0,33);
+            _birdPad = -26f;
+            ClearLineInConsole(0, 31);
+            ClearLineInConsole(0, 32);
+            ClearLineInConsole(0, 33);
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.SetCursorPosition(0, 31);
             Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
@@ -225,7 +231,12 @@ class Program
             Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
             Console.SetCursorPosition(0, 33);
             Console.WriteLine(_starBrick + _starBrick.PadLeft(60));
-            Console.ResetColor(); 
+            DrawBird((int)_birdPad, (int)_previousBirdPad);
+
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.SetCursorPosition(60, 32);
+            Console.Write(_starBrick);
+            Console.ResetColor();
         }
 
     }
